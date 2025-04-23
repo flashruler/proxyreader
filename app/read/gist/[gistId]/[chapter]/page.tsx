@@ -2,7 +2,8 @@ import Link from "next/link";
 import { Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fetchGistConfig, GistConfig } from "@/lib/gist";
-import { resolveSourcePages } from "@/lib/source-resolver";
+// Removed unused import
+// import { resolveSourcePages } from "@/lib/source-resolver"; 
 import { GistReaderClient } from "@/components/reader/gist-reader-client"; // Import the new client component
 
 // Server Component Page
