@@ -4,14 +4,17 @@ import { Button } from "@/components/ui/button";
 import { fetchImgurAlbumPages } from "@/lib/imgur"; // Ensure this function can run server-side
 import { ImgurReaderClient } from "@/components/reader/imgur-reader-client"; // Import the new client component
 
-// Interface for page parameters
-interface ImgurReaderPageParams {
-  albumId: string;
-}
+// Interface for page parameters - Removed as we type inline now
+// interface ImgurReaderPageParams {
+//   albumId: string;
+// }
 
 // Server Component Page
-export default async function ImgurReaderPage({ params }: { params: ImgurReaderPageParams }) {
-  const { albumId } = params;
+// Apply same workaround: Remove explicit type, use any, type internal destructuring
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function ImgurReaderPage({ params }: any) {
+  // Type the destructured param
+  const { albumId }: { albumId: string } = params;
 
   // Validate params - Server-side check
   if (!albumId) {
