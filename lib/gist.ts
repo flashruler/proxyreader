@@ -9,8 +9,8 @@ const chapterSchema = z.object({
   title: z.string(),
   // Allow volume to be a string (potentially empty)
   volume: z.string().optional(), 
-  // Groups maps group name (string) to the proxy path (string)
-  groups: z.record(z.string()), 
+  // Groups maps group name (string) to an ARRAY of URL strings
+  groups: z.record(z.array(z.string().url())),
 })
   // Allow extra fields like last_updated without causing errors
   .passthrough(); 

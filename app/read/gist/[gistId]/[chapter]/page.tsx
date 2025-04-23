@@ -43,22 +43,32 @@ export default async function GistReaderPage({ params }: any) { // Use any for n
       throw new Error(`Chapter '${chapterKey}' not found in Gist configuration.`);
     }
 
-    // Resolve source path
+    // Get the source data (which is now an array of URLs based on the schema)
     const groupKeys = Object.keys(chapterData.groups || {});
     if (groupKeys.length === 0) {
       throw new Error(`No image source groups found for Chapter '${chapterKey}'.`);
     }
-    const sourcePath = chapterData.groups[groupKeys[0]];
-    if (!sourcePath || typeof sourcePath !== 'string') {
-      throw new Error(`Invalid source path found for Chapter '${chapterKey}' (Group: ${groupKeys[0]}). Expected a string.`);
+    const firstGroupName = groupKeys[0];
+    const sourceData = chapterData.groups[firstGroupName]; 
+
+    // Check if sourceData is a valid array of strings (URLs)
+    if (Array.isArray(sourceData) && sourceData.length > 0 && sourceData.every(item => typeof item === 'string')) {
+        // If it's an array of strings, use it directly as the pages
+        pages = sourceData as string[]; 
+    } else {
+        // If it's not a valid array (or potentially a string for future use cases?),
+        // throw an error for now, as resolveSourcePages expects a string path.
+        // We could adapt resolveSourcePages later if needed for other types.
+        console.error("Invalid source data format for chapter:", sourceData);
+        throw new Error(`Invalid or empty source data found for Chapter '${chapterKey}' (Group: ${firstGroupName}). Expected an array of URLs.`);
     }
 
-    // Resolve pages
-    pages = await resolveSourcePages(sourcePath);
+    // No need to call resolveSourcePages for this Gist format
+    // pages = await resolveSourcePages(sourcePath);
     if (pages.length === 0) {
         // It's debatable if this is an *error* or just an empty chapter.
         // For now, let the client component handle displaying "0 pages".
-        console.warn(`No pages resolved for Gist ${gistId}, Chapter ${chapterKey}, Source ${sourcePath}`);
+        console.warn(`No pages resolved for Gist ${gistId}, Chapter ${chapterKey}, Group ${firstGroupName}`);
     }
 
   } catch (err: unknown) {
